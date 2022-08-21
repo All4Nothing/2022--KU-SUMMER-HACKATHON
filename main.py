@@ -20,7 +20,7 @@ model = AutoModelForSequenceClassification.from_pretrained("eliza-dukim/bert-bas
 model = model.from_pretrained('model.pt')
 
 contents = ["밝기 설정하는 법", "와이파이 설정하는 법", "음식 시키는 법", "카카오톡 사진 보내기", "이모티콘 사용하는 법", "음량 조절하는 법"] #
-threshold = 0.1
+threshold = 0.17
 
 app = FastAPI()
 
@@ -52,9 +52,10 @@ async def contents_prediction(speech: Sound):
         return tokenizer(s1, s2, truncation=True, max_length=512, padding=True, return_tensors='pt')
 
     def softmax(x):
-        y = np.exp(x - np.max(x))
-        f_x = y / np.sum(np.exp(x))
-        return f_x
+        exp_a = np.exp(x)
+        sum_exp_a = np.sum(exp_a)
+        y=exp_a / sum_exp_a
+        return y
     
     def sentence_to_encoded_dict(input_text):
         for content in contents:
